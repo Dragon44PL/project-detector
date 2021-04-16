@@ -1,4 +1,4 @@
-package com.github.projectdetector.core.mongodbservice;
+package com.github.projectdetector.core;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
