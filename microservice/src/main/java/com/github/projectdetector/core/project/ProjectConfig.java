@@ -4,6 +4,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.scheduling.annotation.EnableScheduling;
+import org.springframework.web.client.RestTemplate;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 
@@ -14,9 +15,27 @@ class ProjectConfig {
     @Value("${project.detector.username:}")
     private String username;
 
+    @Value("${project.detector.api.url:}")
+    private String url;
+
     @Bean
     ScheduledExecutorService scheduledExecutorService() {
         return Executors.newScheduledThreadPool(Runtime.getRuntime().availableProcessors());
+    }
+
+    @Bean
+    RestTemplate restTemplate() {
+        return new RestTemplate();
+    }
+
+    @Bean
+    GithubRepository githubRepository(RestTemplate restTemplate) {
+        final String url = createUrl();
+        return new RestTemplateGithubRepository(restTemplate, url);
+    }
+
+    private String createUrl() {
+        return String.format(url, username);
     }
 
     @Bean
