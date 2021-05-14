@@ -9,10 +9,11 @@ import lombok.*;
 class GithubProject {
 
     private String id;
-    private String node_id;
+    private GithubOwner owner;
     private String name;
     private String url;
     private String created_at;
     private String updated_at;
-    private String pushed_at;
+    private String description;
+    private String language;
 }

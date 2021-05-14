@@ -15,15 +15,16 @@ class Project {
 
     @MongoId
     private Long id;
-    private String nodeId;
+    private Owner owner;
+    private boolean availability = true;
     private String name;
     private String url;
     private Instant createdAt;
     private Instant updatedAt;
-    private Instant pushedAt;
-    private String user;
+    private String description;
+    private String language;
 
-    public boolean sameProject(Project project) {
+    boolean sameProject(Project project) {
         return this.id.equals(project.id);
     }
 }
