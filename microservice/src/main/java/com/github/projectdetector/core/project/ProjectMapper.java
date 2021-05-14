@@ -14,11 +14,14 @@ class ProjectMapper {
 
         final Instant createdAt = Instant.parse(githubProject.getCreated_at());
         final Instant updatedAt = Instant.parse(githubProject.getUpdated_at());
-        final Instant pushedAt = Instant.parse(githubProject.getPushed_at());
 
-        return Optional.ofNullable(Project.builder().id(id)
-            .nodeId(githubProject.getNode_id()).name(githubProject.getName()).createdAt(createdAt).updatedAt(updatedAt)
-            .pushedAt(pushedAt).url(githubProject.getUrl()).build());
+        return Optional.ofNullable(Project.builder().availability(true).id(id)
+            .language(githubProject.getLanguage()).description(githubProject.getDescription()).owner(owner(githubProject.getOwner()))
+            .name(githubProject.getName()).createdAt(createdAt).updatedAt(updatedAt).url(githubProject.getUrl()).build());
+    }
+
+    private Owner owner(GithubOwner githubOwner) {
+        return Owner.builder().login(githubOwner.getLogin()).build();
     }
 
     public List<Project> convertAll(List<GithubProject> githubProjects) {
