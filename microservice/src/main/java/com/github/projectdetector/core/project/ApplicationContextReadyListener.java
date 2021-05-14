@@ -7,14 +7,14 @@ import org.springframework.stereotype.Component;
 @Component
 class ApplicationContextReadyListener implements ApplicationListener<ApplicationReadyEvent> {
 
-    private final ProjectSchedulerStopper projectSchedulerStopper;
+    private final ProjectSchedulerExecutor projectSchedulerExecutor;
 
-    ApplicationContextReadyListener(ProjectSchedulerStopper projectSchedulerStopper) {
-        this.projectSchedulerStopper = projectSchedulerStopper;
+    ApplicationContextReadyListener(ProjectSchedulerExecutor projectSchedulerExecutor) {
+        this.projectSchedulerExecutor = projectSchedulerExecutor;
     }
 
     @Override
     public void onApplicationEvent(ApplicationReadyEvent applicationReadyEvent) {
-        this.projectSchedulerStopper.start();
+        this.projectSchedulerExecutor.start();
     }
 }
