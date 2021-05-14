@@ -9,22 +9,22 @@ class ProjectController {
 
     private final ProjectFacade projectFacade;
     private final ProjectScheduler projectScheduler;
-    private final ProjectSchedulerStopper projectSchedulerStopper;
+    private final ProjectSchedulerExecutor projectSchedulerExecutor;
 
-    ProjectController(ProjectFacade projectFacade, ProjectScheduler projectScheduler, ProjectSchedulerStopper projectSchedulerStopper) {
+    ProjectController(ProjectFacade projectFacade, ProjectScheduler projectScheduler, ProjectSchedulerExecutor projectSchedulerExecutor) {
         this.projectFacade = projectFacade;
         this.projectScheduler = projectScheduler;
-        this.projectSchedulerStopper = projectSchedulerStopper;
+        this.projectSchedulerExecutor = projectSchedulerExecutor;
     }
 
-    @GetMapping("/project")
+    @GetMapping("/projects")
     List<Project> findProjects(@RequestParam(required = false) String username) {
         return (username != null && !username.equals(""))
             ? projectFacade.findProjectsByUser(username)
             : projectFacade.findAllProjects();
     }
 
-    @PostMapping("/project/username/{username}")
+    @PostMapping("/projects/username/{username}")
     ResponseEntity<String> scheduleFor(@PathVariable(value = "username", required = true) String username) {
         final RepositoryConfig repositoryConfig = new RepositoryConfig(username);
         this.projectScheduler.setRepositoryConfig(repositoryConfig);
@@ -32,16 +32,16 @@ class ProjectController {
         return ResponseEntity.ok(message);
     }
 
-    @PostMapping("/project/stop")
+    @PostMapping("/projects/stop")
     ResponseEntity<String> stopScheduler() {
-        projectSchedulerStopper.stop();
+        projectSchedulerExecutor.stop();
         final String message = "Scheduler stopped";
         return ResponseEntity.ok(message);
     }
 
-    @PostMapping("/project/start")
+    @PostMapping("/projects/start")
     ResponseEntity<String> startScheduler() {
-        projectSchedulerStopper.start();
+        projectSchedulerExecutor.start();
         final String message = "Scheduler work in progress";
         return ResponseEntity.ok(message);
     }
