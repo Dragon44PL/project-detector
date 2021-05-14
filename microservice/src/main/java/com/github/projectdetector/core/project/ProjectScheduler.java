@@ -30,17 +30,18 @@ class ProjectScheduler implements Runnable {
     }
 
     private List<Project> updateProjects(Map<Project, Project> projects) {
-        return projects.keySet().stream().map((key) -> {
-            final Project entry = projects.get(key);
-            return updateProject(entry, key);
+        return projects.keySet().stream().map((original) -> {
+            final Project converted = projects.get(original);
+            return updateProject(original, converted);
         }).collect(Collectors.toList());
     }
 
     private Project updateProject(Project original, Project retrieved) {
         original.setCreatedAt(retrieved.getCreatedAt());
         original.setName(retrieved.getName());
-        original.setNodeId(retrieved.getNodeId());
-        original.setPushedAt(retrieved.getPushedAt());
+        original.setUrl(retrieved.getUrl());
+        original.setLanguage(retrieved.getLanguage());
+        original.setDescription(retrieved.getDescription());
         original.setUpdatedAt(retrieved.getUpdatedAt());
         return original;
     }
@@ -50,13 +51,21 @@ class ProjectScheduler implements Runnable {
         final List<Project> toSave = new ArrayList<>();
 
         converted.forEach((currentConverted) -> {
-            final Optional<Project> found = original.stream().filter(currentConverted::sameProject).findAny();
-            found.ifPresentOrElse(current -> toUpdate.put(currentConverted, current), () -> toSave.add(currentConverted));
+            final Optional<Project> foundExists = original.stream().filter(currentConverted::sameProject).findAny();
+            foundExists.ifPresentOrElse(current -> toUpdate.put(current, currentConverted), () -> toSave.add(currentConverted));
         });
 
-        toSave.forEach((project) -> project.setUser(repositoryConfig.getUsername()));
+        markDeleted(converted, original);
         toSave.addAll(updateProjects(toUpdate));
         projectFacade.saveProjects(toSave);
+    }
+
+    private void markDeleted(List<Project> converted, List<Project> original) {
+        original.forEach((origin) -> {
+            if(converted.stream().noneMatch((origin::sameProject))) {
+                origin.setAvailability(false);
+            }
+        });
     }
 
     void setRepositoryConfig(RepositoryConfig repositoryConfig) {
