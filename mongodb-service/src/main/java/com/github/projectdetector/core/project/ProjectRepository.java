@@ -4,5 +4,5 @@ import org.springframework.data.mongodb.repository.MongoRepository;
 import java.util.List;
 
 interface ProjectRepository extends MongoRepository<Project, Long> {
-    List<Project> findAllByUser(String user);
+    List<Project> findAllByOwnerLoginAndAvailabilityIsTrue(String user);
 }

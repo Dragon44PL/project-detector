@@ -17,7 +17,7 @@ class ProjectFacade {
     }
 
     public List<Project> findProjectsByUser(String user) {
-        return projectRepository.findAllByUser(user);
+        return projectRepository.findAllByOwnerLoginAndAvailabilityIsTrue(user);
     }
 
     public void saveProjects(List<Project> projects) {
