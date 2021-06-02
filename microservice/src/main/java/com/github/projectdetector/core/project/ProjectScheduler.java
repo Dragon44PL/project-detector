@@ -70,10 +70,5 @@ class ProjectScheduler implements Runnable {
 
     void setRepositoryConfig(RepositoryConfig repositoryConfig) {
         this.repositoryConfig = repositoryConfig;
-        this.checkForGithubRepos();
-    }
-
-    RepositoryConfig getRepositoryConfig() {
-        return repositoryConfig;
     }
 }
