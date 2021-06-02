@@ -28,21 +28,25 @@ class ProjectController {
     ResponseEntity<String> scheduleFor(@PathVariable(value = "username", required = true) String username) {
         final RepositoryConfig repositoryConfig = new RepositoryConfig(username);
         this.projectScheduler.setRepositoryConfig(repositoryConfig);
-        final String message = "User has been changed to \"" + username + "\"";
-        return ResponseEntity.ok(message);
+        this.projectSchedulerExecutor.restart();
+        return ResponseEntity.ok("User has been changed to \"" + username + "\"");
     }
 
     @PostMapping("/projects/stop")
     ResponseEntity<String> stopScheduler() {
-        projectSchedulerExecutor.stop();
-        final String message = "Scheduler stopped";
-        return ResponseEntity.ok(message);
+        if(projectSchedulerExecutor.isRunning()) {
+            projectSchedulerExecutor.stop();
+        }
+
+        return ResponseEntity.ok("Scheduler stopped");
     }
 
     @PostMapping("/projects/start")
     ResponseEntity<String> startScheduler() {
-        projectSchedulerExecutor.start();
-        final String message = "Scheduler work in progress";
-        return ResponseEntity.ok(message);
+        if(!projectSchedulerExecutor.isRunning()) {
+            projectSchedulerExecutor.start();
+        }
+
+        return ResponseEntity.ok("Scheduler work in progress");
     }
 }
